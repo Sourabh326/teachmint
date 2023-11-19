@@ -11,6 +11,7 @@ const Profile = () => {
   const [countryList, setCountryList] = useState([]);
   const [timer, setTimer] = useState(false);
   const [dateTime, setDateTime] = useState(new Date());
+  const [selectedCountry, setSelectedCountry] = useState(true);
   const {
     totalSeconds,
     seconds,
@@ -49,7 +50,7 @@ const Profile = () => {
   }, []);
 
   const handleCountryChange = async (e) => {
-    setTimer(false);
+    setSelectedCountry(true);
     const response = await fetch(
       "http://worldtimeapi.org/api/timezone/" + e.target.value
     );
@@ -82,7 +83,11 @@ const Profile = () => {
             </select>
           </div>
           <div>
-            {timer ? (
+            {selectedCountry ? (
+              <div class=" px-6 py-2 font-semibold rounded-md bg-gray-700 text-white">
+                {moment(dateTime).format("YYYY-MM-DD h:mm:ss A")}
+              </div>
+            ) : (
               <div>
                 <MyStopwatch
                   minutes={minutes}
@@ -91,17 +96,14 @@ const Profile = () => {
                   seconds={seconds}
                 />
               </div>
-            ) : (
-              <div class=" px-6 py-2 font-semibold rounded-md bg-gray-700 text-white">
-                {moment(dateTime).format("YYYY-MM-DD h:mm:ss A")}
-              </div>
             )}
           </div>
           <div>
             <button
               className="h-10 px-6 font-semibold rounded-md bg-green-300"
               onClick={() => {
-                setTimer(true);
+                setTimer(!timer);
+                setSelectedCountry(false);
                 if (timer) {
                   pause();
                 } else {
